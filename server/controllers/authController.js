@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // Create a new user account if the provided name, email, and password are valid and email is unique
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, consent } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -40,7 +40,13 @@ exports.register = async (req, res) => {
     const user = await User.create({
       name,
       email: email.toLowerCase(),
-      password
+      password,
+      portfolio: {
+        consent: Boolean(consent),
+        cashAvailable: 0,
+        monthlyInvestment: 0,
+        holdings: []
+      }
     });
 
     const token = generateToken(user._id);

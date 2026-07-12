@@ -7,6 +7,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,7 +35,7 @@ const Register = () => {
 
     try {
       setIsSubmitting(true);
-      await register(name, email, password);
+      await register(name, email, password, consent);
       navigate('/portfolio', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please verify your details.');
@@ -130,6 +131,19 @@ const Register = () => {
                   required
                 />
               </div>
+            </div>
+
+            <div className="flex items-start gap-3 py-2">
+              <input
+                id="portfolioConsent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="h-4.5 w-4.5 rounded border-v-dark/20 text-v-dark focus:ring-v-dark cursor-pointer mt-0.5"
+              />
+              <label htmlFor="portfolioConsent" className="text-xs text-v-dark/80 font-sans cursor-pointer select-none leading-normal">
+                I consent to use my portfolio holding details for research validation and suitability checks.
+              </label>
             </div>
 
             <button
