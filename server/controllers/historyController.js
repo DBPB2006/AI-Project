@@ -1,4 +1,5 @@
 const Analysis = require('../models/Analysis');
+const { buildPresentationData } = require('../utils/presentationBuilder');
 
 // Retrieve all past stock analyses saved by the authenticated user, sorted by creation date
 exports.getHistory = async (req, res) => {
@@ -7,9 +8,19 @@ exports.getHistory = async (req, res) => {
       .sort({ createdAt: -1 })
       .select('symbol company recommendation confidence createdAt reportData');
 
+    const formattedHistory = history.map(item => {
+      const itemObj = item.toObject();
+      if (itemObj.reportData) {
+        if (!itemObj.reportData.symbol) itemObj.reportData.symbol = itemObj.symbol;
+        if (!itemObj.reportData.company) itemObj.reportData.company = itemObj.company;
+        itemObj.reportData.presentationData = buildPresentationData(itemObj.reportData);
+      }
+      return itemObj;
+    });
+
     return res.status(200).json({
       success: true,
-      data: history
+      data: formattedHistory
     });
   } catch (error) {
     // Return a 500 error if query execution fails
