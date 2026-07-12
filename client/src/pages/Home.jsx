@@ -120,13 +120,13 @@ const Home = () => {
         <div className="floating-square hidden lg:block z-0" style={{ top: '28%', right: '18%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '45%', right: '5%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '65%', right: '12%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ top: '35%', left: '45%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ top: '35%', left: '60%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '8%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '15%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ bottom: '35%', left: '5%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ bottom: '45%', left: '25%' }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '35%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '20%', left: '48%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '20%', left: '65%' }}></div>
       </section>
 
       {/* 2. Coverage / Specialized AI Agents Section */}
