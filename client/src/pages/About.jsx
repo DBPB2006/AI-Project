@@ -21,7 +21,7 @@ const About = () => {
                 Architecture &amp; Protocol
               </h1>
               <p className="text-lg md:text-xl font-serif text-v-dark/80 leading-relaxed max-w-2xl">
-                Replacing generative speculation with verifiable multi-agent audit pipelines. How we coordinate specialized AI agents to inspect SEC filings, balance sheet consistency, and market catalysts.
+                Replacing generative speculation with verifiable multi-agent research pipelines. How we coordinate specialized AI agents to inspect financial filings, balance sheet consistency, and market catalysts.
               </p>
             </div>
 
@@ -34,7 +34,7 @@ const About = () => {
                 LangGraph State Protocol
               </div>
               <p className="text-xs font-mono text-v-dark/80 leading-relaxed">
-                ZERO HALLUCINATION MANDATE &bull; EVIDENCE CITATION TRACKING &bull; SEC EDGAR DIRECT QUERY
+                ZERO HALLUCINATION MANDATE &bull; EVIDENCE CITATION TRACKING &bull; VERIFIABLE METRIC EXTRACTION
               </p>
             </div>
           </div>
@@ -100,7 +100,7 @@ const About = () => {
               {
                 node: 'NODE 01',
                 title: 'Research & Ingestion Engine',
-                spec: 'Queries FMP, Finnhub, and SEC EDGAR to construct a normalized JSON Evidence Package containing multi-year income statements, balance sheets, and real-time market quote tape.'
+                spec: 'Queries FMP, Finnhub, and News APIs to construct a normalized JSON Evidence Package containing multi-year income statements, balance sheets, and real-time market quote tape.'
               },
               {
                 node: 'NODE 02',
@@ -120,7 +120,7 @@ const About = () => {
               {
                 node: 'NODE 05',
                 title: 'Investment Decision Agent',
-                spec: 'Synthesizes all validated quantitative and qualitative vectors into an authoritative Investment Memorandum with explainable BUY / HOLD / PASS verdict.'
+                spec: 'Synthesizes all validated quantitative and qualitative vectors into an authoritative Investment Memorandum with explainable INVEST / PASS verdict.'
               },
               {
                 node: 'OPTIONAL NODE',
@@ -183,7 +183,7 @@ const About = () => {
           <div className="lg:col-span-7 bg-[#262626] border border-white/10 rounded p-8">
             <div className="space-y-5">
               {[
-                { name: 'SEC EDGAR Direct Ingestion', detail: 'Real-time 10-K Annual and 10-Q Quarterly Statutory Disclosures' },
+                { name: 'FMP SEC Filing Interface', detail: 'Real-time 10-K Annual and 10-Q Quarterly filings and standardized metrics' },
                 { name: 'Financial Modeling Prep (FMP)', detail: 'Standardized Multi-Year Income Statements & Financial Ratios' },
                 { name: 'Finnhub Institutional Feed', detail: 'Live Exchange Price Action, Intraday Quotes & 52-Week Bands' },
                 { name: 'NewsAPI Macro Wire', detail: 'Curated Financial Journalism & Regulatory Press Release Sentiment' }
@@ -241,7 +241,7 @@ const About = () => {
                 How does the Evidence Validation Layer work?
               </h3>
               <p className="text-sm font-sans text-v-dark/80 leading-relaxed">
-                A specialized verification agent inspects every sentence of the draft report and verifies whether its numbers and claims appear verbatim or mathematically derived in the original FMP/SEC payloads. Unverified statements are purged.
+                A specialized verification agent inspects every sentence of the draft report and verifies whether its numbers and claims appear verbatim or mathematically derived in the original FMP/Finnhub payloads. Unverified statements are purged.
               </p>
             </div>
           </div>
