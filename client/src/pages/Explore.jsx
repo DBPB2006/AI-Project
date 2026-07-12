@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/config';
 
 const Explore = () => {
   const [companies, setCompanies] = useState([]);
@@ -21,7 +22,7 @@ const Explore = () => {
     const delayDebounceFn = setTimeout(() => {
       setLoading(true);
       setIsSearching(true);
-      axios.get(`http://localhost:3300/api/companies?q=${searchQuery}`)
+      axios.get(`${API_BASE_URL}/api/companies?q=${searchQuery}`)
         .then((res) => {
           setCompanies(res.data.data || []);
           setLoading(false);

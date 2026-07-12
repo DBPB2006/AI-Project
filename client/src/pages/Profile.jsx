@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../utils/config';
 
-const API_URL = 'http://localhost:3300/api/auth';
+const API_URL = `${API_BASE_URL}/api/auth`;
 
 const Profile = () => {
   const { user, updateUser } = useAuth();

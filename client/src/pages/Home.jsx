@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/config';
 
 const Home = () => {
   const [symbol, setSymbol] = useState('');
@@ -18,7 +19,7 @@ const Home = () => {
 
     const delayDebounceFn = setTimeout(() => {
       setIsSearching(true);
-      axios.get(`http://localhost:3300/api/companies?q=${symbol}`)
+      axios.get(`${API_BASE_URL}/api/companies?q=${symbol}`)
         .then(res => {
           setResults(res.data.data);
           setShowDropdown(true);

@@ -7,7 +7,12 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const mongoose = require('mongoose');

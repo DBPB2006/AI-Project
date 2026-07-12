@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../utils/config';
 
-const API_URL = 'http://localhost:3300/api/portfolio';
+const API_URL = `${API_BASE_URL}/api/portfolio`;
 
 const Portfolio = () => {
   const { user, updateUser } = useAuth();

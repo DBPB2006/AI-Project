@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/config';
 
-const API_URL = 'http://localhost:3300/api/history';
+const API_URL = `${API_BASE_URL}/api/history`;
 
 const History = () => {
   const [history, setHistory] = useState([]);

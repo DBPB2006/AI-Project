@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/config';
 
 const Processing = () => {
   const location = useLocation();
@@ -16,7 +17,7 @@ const Processing = () => {
     hasFetched.current = true;
 
     axios
-      .post('http://localhost:3300/api/analyze', { symbol, userConsent })
+      .post(`${API_BASE_URL}/api/analyze`, { symbol, userConsent })
       .then((res) => {
         navigate('/report', { state: { reportData: res.data.data } });
       })
