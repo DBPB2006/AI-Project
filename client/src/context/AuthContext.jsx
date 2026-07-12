@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
     fetchProfile();
   }, [token]);
 
-  const login = async (email, password) => {
-    const res = await axios.post(`${API_URL}/login`, { email, password });
+  const login = async (email, password, consent) => {
+    const res = await axios.post(`${API_URL}/login`, { email, password, consent });
     setToken(res.data.token);
     setUser(res.data.user);
     return res.data;

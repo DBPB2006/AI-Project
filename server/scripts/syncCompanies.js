@@ -7,7 +7,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const Company = require('../models/Company');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/research_engine_db';
+const MONGODB_URI = process.env.MONGODB_URI;
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY;
 const API_URL = 'https://finnhub.io/api/v1/stock/symbol?exchange=US';
 
@@ -53,7 +53,7 @@ function prepareDatabaseOperations(rawCompanies) {
         filter: { symbol: symbol },
         update: { $set: updateData },
         // Ensure existing records are updated and new records are inserted automatically
-        upsert: true, 
+        upsert: true,
       },
     });
   }

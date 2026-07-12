@@ -73,7 +73,7 @@ exports.register = async (req, res) => {
 // Authenticate user credentials and return a session token upon successful validation
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, consent } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -90,6 +90,11 @@ exports.login = async (req, res) => {
         success: false,
         message: 'Invalid email or password.'
       });
+    }
+
+    if (consent !== undefined) {
+      user.portfolio.consent = Boolean(consent);
+      await user.save();
     }
 
     const token = generateToken(user._id);

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,7 +26,7 @@ const Login = () => {
 
     try {
       setIsSubmitting(true);
-      await login(email, password);
+      await login(email, password, consent);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Authentication failed. Please verify credentials.');
@@ -88,6 +89,19 @@ const Login = () => {
                 className="w-full px-5 py-4 rounded bg-[#fcfcfc] text-v-dark border border-v-dark/20 focus:outline-none focus:ring-2 focus:ring-v-dark focus:bg-white transition-all font-sans"
                 required
               />
+            </div>
+
+            <div className="flex items-start gap-3 py-2">
+              <input
+                id="portfolioConsent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="h-4.5 w-4.5 rounded border-v-dark/20 text-v-dark focus:ring-v-dark cursor-pointer mt-0.5"
+              />
+              <label htmlFor="portfolioConsent" className="text-xs text-v-dark/80 font-sans cursor-pointer select-none leading-normal">
+                I consent to use my portfolio holding details for research validation and suitability checks.
+              </label>
             </div>
 
             <button
