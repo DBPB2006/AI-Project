@@ -75,7 +75,7 @@ const Register = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Eleanor Vance"
+                placeholder="Your name"
                 className="w-full px-5 py-4 rounded bg-[#fcfcfc] text-v-dark border border-v-dark/20 focus:outline-none focus:ring-2 focus:ring-v-dark focus:bg-white transition-all font-sans"
                 required
               />
@@ -89,7 +89,7 @@ const Register = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="eleanor.vance@firm.com"
+                placeholder="your_name@firm.com"
                 className="w-full px-5 py-4 rounded bg-[#fcfcfc] text-v-dark border border-v-dark/20 focus:outline-none focus:ring-2 focus:ring-v-dark focus:bg-white transition-all font-sans"
                 required
               />
