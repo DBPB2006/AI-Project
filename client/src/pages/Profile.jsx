@@ -126,8 +126,10 @@ const Profile = () => {
         </div>
 
         {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '12%', right: '4%', opacity: 0.15 }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '1%', opacity: 0.25 }}></div>
       </section>
 
       {/* Forms & Mandate Configuration Section */}
@@ -161,7 +163,7 @@ const Profile = () => {
 
                     <div>
                       <label className="block text-xs font-mono font-bold uppercase text-v-dark mb-2">
-                        INSTITUTIONAL EMAIL ADDRESS
+                        EMAIL ADDRESS
                       </label>
                       <input
                         type="email"
@@ -323,7 +325,7 @@ const Profile = () => {
               Automated Suitability Screening
             </h2>
             <p className="text-sm font-sans text-gray-300 leading-relaxed">
-              When enabled during analysis, our AI agents verify candidate equities against your exact preferred and restricted sector parameters above, providing custom institutional alignment scoring.
+              When enabled during analysis, our AI agents verify candidate equities against your exact preferred and restricted sector parameters above, providing custom portfolio alignment scoring.
             </p>
           </div>
 
@@ -338,8 +340,8 @@ const Profile = () => {
         </div>
 
         {/* Signature Floating Squares */}
-        <div className="floating-square hidden lg:block" style={{ top: '25%', left: '5%' }}></div>
-        <div className="floating-square hidden lg:block" style={{ bottom: '20%', right: '10%' }}></div>
+        <div className="floating-square hidden lg:block" style={{ top: '25%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block" style={{ bottom: '20%', right: '4%' }}></div>
       </section>
     </div>
   );

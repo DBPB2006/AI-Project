@@ -7,7 +7,7 @@ const Settings = () => {
   const navigate = useNavigate();
 
   const handleDeleteAccount = () => {
-    if (window.confirm('Are you certain you wish to delete your institutional researcher account? This action cannot be undone.')) {
+    if (window.confirm('Are you certain you wish to delete your research account? This action cannot be undone.')) {
       logout();
       navigate('/');
     }
@@ -26,8 +26,10 @@ const Settings = () => {
         </div>
 
         {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '12%', right: '4%', opacity: 0.15 }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '1%', opacity: 0.25 }}></div>
       </section>
 
       {/* Body Content */}
@@ -37,7 +39,7 @@ const Settings = () => {
           <section className="border-b border-gray-200 pb-8">
             <h3 className="text-2xl font-bold text-black mb-4">Account Settings</h3>
             <p className="text-sm text-gray-600 mb-6">
-              Institutional Account ID: <span className="font-mono font-bold text-black">{user?._id || 'GUEST'}</span>
+              Account ID: <span className="font-mono font-bold text-black">{user?._id || 'GUEST'}</span>
             </p>
             <div className="flex gap-4">
               <button
@@ -71,7 +73,7 @@ const Settings = () => {
                 Editorial Monochrome (Active)
               </span>
               <span className="text-xs text-gray-500">
-                Institutional editorial design system locked to high-contrast monochrome & emerald highlights.
+                Editorial design system locked to high-contrast monochrome & emerald highlights.
               </span>
             </div>
           </section>

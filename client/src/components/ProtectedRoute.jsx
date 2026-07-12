@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
     return (
       <div className="w-full min-h-[70vh] flex items-center justify-center bg-white font-sans">
         <div className="text-sm font-mono uppercase tracking-widest text-gray-500 animate-pulse">
-          Verifying Institutional Session...
+          Verifying Session...
         </div>
       </div>
     );

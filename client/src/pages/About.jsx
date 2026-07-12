@@ -40,9 +40,11 @@ const About = () => {
           </div>
         </div>
 
-        {/* Floating geometric accents matching Home.jsx */}
+        {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '12%', right: '4%', opacity: 0.15 }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '1%', opacity: 0.25 }}></div>
       </section>
 
       {/* 1. Architectural Manifesto — Two Column Monograph */}
@@ -57,7 +59,7 @@ const About = () => {
                 Why Standard Financial LLMs Fail
               </h2>
               <p className="text-base font-sans text-v-dark/80 leading-relaxed mb-4">
-                Standard large language models synthesize answers from statistical weights rather than deterministic evidence. In institutional finance, a single hallucinated EBITDA margin or overlooked off-balance-sheet liability invalidates the entire analysis.
+                Standard large language models synthesize answers from statistical weights rather than deterministic evidence. In professional finance, a single hallucinated EBITDA margin or overlooked off-balance-sheet liability invalidates the entire analysis.
               </p>
               <p className="text-base font-sans text-v-dark/80 leading-relaxed">
                 Furthermore, monolithic prompts mix data ingestion, numerical verification, and qualitative thesis generation into a single opaque step—making formal audit trails impossible.
@@ -124,12 +126,12 @@ const About = () => {
               {
                 node: 'NODE 05',
                 title: 'Investment Decision Agent',
-                spec: 'Synthesizes all validated quantitative and qualitative vectors into an authoritative Investment Memorandum with explainable INVEST / PASS verdict.'
+                spec: 'Synthesizes all validated quantitative and qualitative vectors into an authoritative Investment Report with explainable INVEST / PASS verdict.'
               },
               {
                 node: 'OPTIONAL NODE',
                 title: 'Portfolio Suitability Agent',
-                spec: 'Couples objective equities research with your custom institutional mandate, checking personal risk tolerance and sector diversification constraints.'
+                spec: 'Couples objective equities research with your custom portfolio mandate, checking personal risk tolerance and sector diversification constraints.'
               }
             ].map((card, idx) => (
               <article
@@ -163,7 +165,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* 3. Institutional Data Feed Schedule */}
+      {/* 3. Data Feed Schedule */}
       <section className="py-24 px-8 md:px-16 lg:px-24 bg-[#1a1a1a] text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           <div className="lg:col-span-5">
@@ -171,10 +173,10 @@ const About = () => {
               DATA FEED INTEGRATION
             </span>
             <h2 className="text-4xl font-medium tracking-tight text-white mb-4">
-              Institutional Data Providers
+              Market Data Providers
             </h2>
             <p className="text-sm font-sans text-gray-300 leading-relaxed mb-6">
-              Our multi-agent graph ingests raw payloads directly from regulated institutional APIs. No intermediate caching layers or outdated model weights are used for quantitative metrics.
+              Our multi-agent graph ingests raw payloads directly from regulated market APIs. No intermediate caching layers or outdated model weights are used for quantitative metrics.
             </p>
             <Link
               to="/explore"
@@ -189,7 +191,7 @@ const About = () => {
               {[
                 { name: 'FMP SEC Filing Interface', detail: 'Real-time 10-K Annual and 10-Q Quarterly filings and standardized metrics' },
                 { name: 'Financial Modeling Prep (FMP)', detail: 'Standardized Multi-Year Income Statements & Financial Ratios' },
-                { name: 'Finnhub Institutional Feed', detail: 'Live Exchange Price Action, Intraday Quotes & 52-Week Bands' },
+                { name: 'Finnhub Stock Feed', detail: 'Live Exchange Price Action, Intraday Quotes & 52-Week Bands' },
                 { name: 'NewsAPI Macro Wire', detail: 'Curated Financial Journalism & Regulatory Press Release Sentiment' }
               ].map((feed, idx) => (
                 <div
@@ -233,7 +235,7 @@ const About = () => {
                 Does the platform guarantee investment returns?
               </h3>
               <p className="text-sm font-sans text-v-dark/80 leading-relaxed">
-                No. The platform is an autonomous research tool designed to accelerate institutional diligence by compiling verified data and structured memos. All recommendations require independent human verification.
+                No. The platform is an autonomous research tool designed to accelerate financial diligence by compiling verified data and structured memos. All recommendations require independent human verification.
               </p>
             </div>
 

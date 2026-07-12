@@ -65,9 +65,9 @@ const Report = () => {
           <div className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center mx-auto text-xl font-sans">
             E
           </div>
-          <h2 className="text-3xl font-sans font-normal text-black tracking-tight">No Active Research Memorandum</h2>
+          <h2 className="text-3xl font-sans font-normal text-black tracking-tight">No Active Research Report</h2>
           <p className="text-sm text-gray-600 font-sans leading-relaxed">
-            Please initiate an investment research inquiry on the Home page to generate a bespoke AI-authored institutional memorandum.
+            Please initiate an investment research inquiry on the Home page to generate an AI-authored research report.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -108,7 +108,7 @@ const Report = () => {
         </div>
       )}
 
-      {/* Institutional Control Strip */}
+      {/* Report Control Strip */}
       <div className="pt-24 border-b border-black/15 bg-white relative z-20">
         <div className="py-4 px-6 md:px-16 lg:px-24">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -122,7 +122,7 @@ const Report = () => {
               </button>
               <span className="h-4 w-[1px] bg-gray-300"></span>
               <span className="text-xs font-sans font-bold tracking-[0.2em] uppercase text-black">
-                {company?.symbol} • AI INVESTMENT MEMORANDUM
+                {company?.symbol} • AI INVESTMENT REPORT
               </span>
             </div>
 
@@ -141,7 +141,7 @@ const Report = () => {
         </div>
       </div>
 
-      {/* SECTION 1: HERO MEMORANDUM MASTHEAD */}
+      {/* SECTION 1: HERO REPORT MASTHEAD */}
       <section className="bg-texture relative pt-14 pb-20 px-6 md:px-16 lg:px-24 border-b border-gray-300 overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 mb-8 border-b border-black/20 text-xs font-sans uppercase tracking-[0.18em] text-gray-800">
@@ -149,7 +149,7 @@ const Report = () => {
               <span className="font-bold bg-black text-white px-3 py-1 rounded-none">
                 AI INVESTMENT RESEARCH AGENT
               </span>
-              <span>BESPOKE INSTITUTIONAL RESEARCH MEMORANDUM</span>
+              <span>AI INVESTMENT ANALYSIS REPORT</span>
             </div>
             <span className="text-[11px] font-semibold text-gray-700">
               STRICTLY AUDITED &bull; {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -315,8 +315,10 @@ const Report = () => {
         </div>
 
         {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '12%', right: '4%', opacity: 0.15 }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '1%', opacity: 0.25 }}></div>
       </section>
 
       {/* SECTION 2: EXECUTIVE THESIS & ANALYST RECOMMENDATION BANNER */}
@@ -327,7 +329,7 @@ const Report = () => {
               <div className="max-w-4xl space-y-4">
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 bg-white text-black text-[11px] font-sans font-bold uppercase tracking-[0.2em] rounded-none">
-                    INSTITUTIONAL MEMORANDUM
+                    INVESTMENT ANALYSIS REPORT
                   </span>
                 </div>
 
@@ -688,13 +690,13 @@ const Report = () => {
         </div>
       </section>
 
-      {/* SECTION 5: INSTITUTIONAL NEWS */}
+      {/* SECTION 5: MARKET NEWS */}
       <section className="bg-white py-24 px-6 md:px-16 lg:px-24 border-b border-black/15">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-black/20">
             <div className="flex items-center gap-3">
               <span className="text-xs font-sans font-bold uppercase tracking-[0.18em] text-gray-800">
-                INSTITUTIONAL NEWS
+                MARKET NEWS
               </span>
             </div>
           </div>
@@ -909,7 +911,7 @@ const Report = () => {
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-12 border-b border-white/15">
               <div className="max-w-3xl space-y-3">
                 <span className="text-[11px] font-sans font-semibold uppercase tracking-[0.22em] text-gray-400">
-                  FINAL EXECUTIVE MEMORANDUM TAKEAWAY
+                  FINAL REPORT EXECUTIVE SUMMARY
                 </span>
                 <h2 className="text-4xl sm:text-5xl font-sans font-normal tracking-tight">
                   <span className={getRecColor(investment.recommendation)}>
@@ -943,7 +945,7 @@ const Report = () => {
         </section>
       )}
 
-      {/* INSTITUTIONAL SIGN-OFF & REGULATORY DISCLOSURES */}
+      {/* REPORT COMPLIANCE & REGULATORY DISCLOSURES */}
       <section className="bg-white py-16 px-6 md:px-16 lg:px-24 border-t border-b border-gray-200 text-gray-600">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="space-y-2 max-w-3xl">
@@ -954,7 +956,7 @@ const Report = () => {
               </span>
             </div>
             <p className="text-xs font-sans leading-relaxed text-gray-500">
-              This institutional memorandum was dynamically synthesized by multi-agent evidence cross-validation. SEC filings, earnings transcripts, and financial statements are cross-audited for numerical fidelity before recommendation scoring.
+              This research report was dynamically synthesized by multi-agent evidence cross-validation. SEC filings, earnings transcripts, and financial statements are cross-audited for numerical fidelity before recommendation scoring.
             </p>
           </div>
 

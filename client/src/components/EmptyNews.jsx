@@ -9,7 +9,7 @@ const EmptyNews = () => {
       <div>
         <h4 className="text-sm font-sans font-bold text-gray-600 uppercase tracking-widest">No Validated News</h4>
         <p className="text-xs font-sans text-gray-500 mt-1">
-          No institutional news articles met the strictly audited threshold.
+          No news articles met the strictly audited threshold.
         </p>
       </div>
     </div>

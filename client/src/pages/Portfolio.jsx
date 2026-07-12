@@ -224,8 +224,10 @@ const Portfolio = () => {
         </div>
 
         {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '12%', right: '4%', opacity: 0.15 }}></div>
         <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
-        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '10%', left: '2%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '25%', left: '1%', opacity: 0.25 }}></div>
       </section>
 
       {/* Selective Dark Storytelling Block — AI Suitability Mandate */}
