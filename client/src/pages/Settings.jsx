@@ -15,9 +15,8 @@ const Settings = () => {
 
   return (
     <div className="w-full min-h-screen bg-white">
-      {/* Editorial Header Banner matching Home.jsx */}
       <section className="bg-texture relative w-full pt-36 pb-20 px-8 md:px-16 lg:px-24 flex flex-col border-b border-v-dark/20">
-        <div className="max-w-7xl mx-auto w-full">
+        <div className="max-w-7xl mx-auto w-full relative z-10">
           <span className="text-xs font-mono uppercase tracking-widest text-v-dark/70 block mb-2">
             System & Environment Controls
           </span>
@@ -25,6 +24,10 @@ const Settings = () => {
             Platform Settings
           </h1>
         </div>
+
+        {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
       </section>
 
       {/* Body Content */}

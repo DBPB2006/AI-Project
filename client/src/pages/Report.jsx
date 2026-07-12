@@ -313,6 +313,10 @@ const Report = () => {
             </div>
           </div>
         </div>
+
+        {/* Signature Floating Squares */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
       </section>
 
       {/* SECTION 2: EXECUTIVE THESIS & ANALYST RECOMMENDATION BANNER */}

@@ -39,6 +39,10 @@ const About = () => {
             </div>
           </div>
         </div>
+
+        {/* Floating geometric accents matching Home.jsx */}
+        <div className="floating-square hidden lg:block z-0" style={{ top: '22%', right: '8%' }}></div>
+        <div className="floating-square hidden lg:block z-0" style={{ bottom: '15%', left: '5%' }}></div>
       </section>
 
       {/* 1. Architectural Manifesto — Two Column Monograph */}
