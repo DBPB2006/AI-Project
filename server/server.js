@@ -31,6 +31,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/history", historyRoutes);
 
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://YOUR-FRONTEND-DOMAIN.vercel.app",
+        "https://YOUR-FRONTEND.onrender.com"
+    ],
+    credentials: true
+}));
 // Set up a root health check endpoint to verify server status
 app.get("/", (req, res) => {
     res.json({
@@ -41,8 +49,8 @@ app.get("/", (req, res) => {
 // Configure and establish MongoDB connection using Mongoose
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/research_engine_db';
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // Initialize and start the Express server on the specified port
 const PORT = process.env.PORT || 3300;
