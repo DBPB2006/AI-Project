@@ -8,8 +8,7 @@ const searchCompanies = async (req, res) => {
             return res.json({ data: [] });
         }
 
-        // Case-insensitive regex search across symbol and name
-        // Limit to 10 results for autocomplete performance
+        // Perform a case-insensitive regex query against symbol or name, matching active companies only. Limit response to 10 items for query performance.
         const companies = await Company.find({
             $or: [
                 { symbol: { $regex: new RegExp(`^${query}`, 'i') } },
@@ -21,7 +20,7 @@ const searchCompanies = async (req, res) => {
         .limit(10)
         .lean();
 
-        // Sort exact matches on symbol first, then name matches
+        // Sort results prioritizing exact symbol matches, followed by symbol prefix matches
         companies.sort((a, b) => {
             const queryUpper = query.toUpperCase();
             if (a.symbol.toUpperCase() === queryUpper) return -1;
@@ -35,7 +34,7 @@ const searchCompanies = async (req, res) => {
 
         res.json({ data: companies });
     } catch (error) {
-        
+        // Return a 500 error if the database query fails
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

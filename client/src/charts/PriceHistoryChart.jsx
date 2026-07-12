@@ -10,8 +10,7 @@ import {
 } from 'recharts';
 
 /**
- * PriceHistoryChart - Displays Last 30 trading days closing price performance.
- * Title: Stock Price Performance
+ * PriceHistoryChart component to display stock close price trends over the last 30 trading days.
  */
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -38,12 +37,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const PriceHistoryChart = ({ historicalPrices = [], source = 'FMP Historical', className = '' }) => {
-  // Normalize and sort oldest to newest for chart progression
+  // Structure pricing arrays chronologically ascending by trading date
   const cleanedData = React.useMemo(() => {
     if (!historicalPrices || !Array.isArray(historicalPrices) || historicalPrices.length === 0) {
       return [];
     }
-    // Take up to 30 trading days and sort chronologically (oldest to newest)
     const validPoints = historicalPrices
       .filter((p) => p && (p.close !== undefined || p.price !== undefined) && p.date)
       .map((p) => ({
@@ -54,7 +52,7 @@ const PriceHistoryChart = ({ historicalPrices = [], source = 'FMP Historical', c
         low: p.low !== undefined ? Number(p.low) : undefined
       }));
 
-    // If reverse chronological, sort ascending by date
+    // Sort points in ascending order of date
     validPoints.sort((a, b) => new Date(a.date) - new Date(b.date));
     return validPoints.slice(-30);
   }, [historicalPrices]);
@@ -72,7 +70,7 @@ const PriceHistoryChart = ({ historicalPrices = [], source = 'FMP Historical', c
     );
   }
 
-  // Calculate dynamic domain for Y axis to give visual depth
+  // Formulate custom chart Y-axis lower and upper bounds using min and max values plus padding
   const minPrice = Math.min(...cleanedData.map((d) => d.close));
   const maxPrice = Math.max(...cleanedData.map((d) => d.close));
   const padding = Math.max((maxPrice - minPrice) * 0.08, 1);

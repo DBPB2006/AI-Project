@@ -12,7 +12,7 @@ const Portfolio = () => {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Form states for Add Holding
+  // Form states for adding a new holding to the portfolio
   const [showAddModal, setShowAddModal] = useState(false);
   const [newSymbol, setNewSymbol] = useState('');
   const [newCompany, setNewCompany] = useState('');
@@ -20,7 +20,7 @@ const Portfolio = () => {
   const [newPrice, setNewPrice] = useState('');
   const [newSector, setNewSector] = useState('Technology');
 
-  // Form states for Cash
+  // Form states for editing available cash and monthly investments
   const [editCash, setEditCash] = useState(false);
   const [cashVal, setCashVal] = useState('');
   const [monthlyVal, setMonthlyVal] = useState('');

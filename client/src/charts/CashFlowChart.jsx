@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 /**
- * CashFlowChart - Displays Free Cash Flow trend.
+ * CashFlowChart component to display a bar chart representing the Free Cash Flow trend over multiple financial periods.
  */
 const CashFlowChart = ({ periods = [], source = 'FMP Cash Flow', className = '' }) => {
   const chartData = React.useMemo(() => {

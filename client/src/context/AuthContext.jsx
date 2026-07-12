@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('evidence_ai_token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Configure global authorization header
+  // Synchronize the JWT session token with local storage and update global axios defaults
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Load profile on initial load if token exists
+  // Query the backend /me profile endpoint on mount if a token is present in the cache
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) {

@@ -7,7 +7,7 @@ async function getCompanyProfile(symbol) {
     try {
         const { data } = await axios.get(`${BASE_URL}/profile?symbol=${symbol}&apikey=${API_KEY}`);
 
-        // Return the first item if the array has data
+        // Extract and return the first company profile object if data is available
         if (data && data.length > 0) {
             return data[0];
         }
@@ -111,12 +111,12 @@ async function getHistoricalPrices(symbol) {
     try {
         const { data } = await axios.get(`${BASE_URL}/historical-price-eod/full?symbol=${symbol}&apikey=${API_KEY}`);
 
-        // If the data is already a direct array
+        // Return the first 30 elements directly if the API output is formatted as an array
         if (Array.isArray(data)) {
             return data.slice(0, 30);
         }
 
-        // If the data is an object with a .historical property
+        // Slice the first 30 elements of the nested historical array if returned as an object
         if (data && data.historical) {
             return data.historical.slice(0, 30);
         }
@@ -153,7 +153,7 @@ async function fetch(symbol) {
             getHistoricalPrices(symbol)
         ]);
 
-        // Normalize Company
+        // Extract and format general company profile metrics
         const normCompany = {
             symbol: company?.symbol || null,
             name: company?.companyName || null,
@@ -167,7 +167,7 @@ async function fetch(symbol) {
             marketCap: company?.mktCap || null
         };
 
-        // Normalize Stock
+        // Map current pricing details and attach historical price arrays
         const normStock = {
             currentPrice: currentPrice?.price || null,
             open: currentPrice?.open || null,
@@ -178,11 +178,11 @@ async function fetch(symbol) {
             averageVolume: currentPrice?.avgVolume || null,
             high52Week: currentPrice?.yearHigh || null,
             low52Week: currentPrice?.yearLow || null,
-            historicalPrices: historicalPrices || [] // handled by evidence historicalPrices later
+            historicalPrices: historicalPrices || []
         };
 
-        // Normalize Financials
-        // FMP arrays have most recent first (index 0)
+        // Extract standard balance sheet, income, and cash flow fields
+        // Note: FMP responses position the most recent period at index 0
         const latestIncome = (incomeStatement && incomeStatement.length > 0) ? incomeStatement[0] : null;
         const latestBalance = (balanceSheet && balanceSheet.length > 0) ? balanceSheet[0] : null;
         const latestCashFlow = (cashFlow && cashFlow.length > 0) ? cashFlow[0] : null;
@@ -198,7 +198,7 @@ async function fetch(symbol) {
             equity: latestBalance?.totalStockholdersEquity || null
         };
 
-        // Normalize Ratios
+        // Map financial evaluation ratios to the standardized output structure
         const latestRatios = (ratios && ratios.length > 0) ? ratios[0] : null;
         const normRatios = {
             pe: latestRatios?.priceEarningsRatio || null,
@@ -211,7 +211,7 @@ async function fetch(symbol) {
             netMargin: latestRatios?.netProfitMargin || null
         };
 
-        // Extract historical financials without fabricating periods
+        // Align matching statement periods to construct a chronological financials array
         const historicalFinancials = incomeStatement ? incomeStatement.map(inc => {
             const bal = balanceSheet?.find(b => (b.calendarYear === inc.calendarYear) || (b.date === inc.date)) || {};
             const cf = cashFlow?.find(c => (c.calendarYear === inc.calendarYear) || (c.date === inc.date)) || {};
@@ -241,7 +241,7 @@ async function fetch(symbol) {
             historicalPrices: historicalPrices || []
         };
 
-        // Approximate raw data size (rough estimation for tracking)
+        // Calculate total size of raw API responses combined
         const rawArray = [company, incomeStatement, balanceSheet, cashFlow, ratios, currentPrice, historicalPrices];
         dataSize = Buffer.byteLength(JSON.stringify(rawArray), 'utf8');
 
@@ -269,8 +269,7 @@ async function fetch(symbol) {
     if (!resultData.company.symbol) missingFields.push("company_profile");
     if (resultData.financials.revenue === null) missingFields.push("income_statement");
 
-    // The endpoint used is generally the FMP base url + multiple routes
-    
+    // Return the fully normalized result data payload
     return resultData;
 }
 

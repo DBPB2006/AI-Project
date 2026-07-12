@@ -1,8 +1,7 @@
 import React from 'react';
 
 /**
- * EvidenceBadge - Displays evidence status, quality rating, or verification state
- * (e.g., Verified, Supported, Conflicting, Quantitative, High Quality).
+ * EvidenceBadge component to display color-coded labels matching verification quality levels (e.g. Verified, Supported, Conflicting).
  */
 const EvidenceBadge = ({ status, quality, label, className = '' }) => {
   const displayLabel = label || status || quality || 'Evidence';

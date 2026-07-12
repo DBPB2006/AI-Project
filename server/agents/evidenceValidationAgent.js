@@ -4,10 +4,10 @@ const { buildValidationPrompt } = require('../prompts/validationPrompt');
 async function analyze(evidence, financialReport, marketReport) {
     const startTime = Date.now();
 
-    // Prepare a reduced dataset for the AI to validate evidence
+    // Format and filter the raw evidence package down to minimize token consumption
     const preparedEvidence = prepareValidationEvidence(evidence, financialReport, marketReport);
     
-    // Build the prompt using the prepared evidence
+    // Call the validation prompt builder to generate the model prompt text
     const prompt = buildValidationPrompt(preparedEvidence);
 
     const MAX_RETRIES = 3;
@@ -16,7 +16,7 @@ async function analyze(evidence, financialReport, marketReport) {
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         const geminiStartTime = Date.now();
-        // Request validation analysis from Gemini
+        // Call the Gemini API wrapper to generate the validation output
         const geminiResponse = await geminiService.generate(prompt);
         const geminiResponseTime = Date.now() - geminiStartTime;
         lastRawResponse = geminiResponse.response;
@@ -28,7 +28,7 @@ async function analyze(evidence, financialReport, marketReport) {
         }
 
         try {
-            // Extract and parse JSON from the AI response
+            // Parse the returned response string to extract valid JSON data
             const parsedData = extractAndParseJSON(geminiResponse.response);
             parsedData.metrics = {
                 "Validation Agent": {
@@ -60,7 +60,7 @@ async function analyze(evidence, financialReport, marketReport) {
 function prepareValidationEvidence(evidence, financialReport, marketReport) {
     if (!evidence || !financialReport || !marketReport) return {};
 
-    // Keep token usage minimal, only keep 2 recent observations
+    // Limit array elements to the first two entries to minimize token usage
     const extractMinimal = (data, count = 2) => {
         if (Array.isArray(data)) return data.slice(0, count);
         return data;
@@ -104,7 +104,7 @@ function prepareValidationEvidence(evidence, financialReport, marketReport) {
     }
     const limitedNews = newsData.slice(0, 10);
 
-    // Minimize reports significantly to reduce tokens
+    // Extract only primary summary attributes from the financial and market reports
     const financialContext = {
         overallSummary: financialReport.overallSummary || "",
         companyOverview: financialReport.companyOverview?.summary || "",
@@ -126,7 +126,7 @@ function prepareValidationEvidence(evidence, financialReport, marketReport) {
         missingEvidence: marketReport.missingEvidence || []
     };
 
-    // Return context objects directly
+    // Formulate the validation context object structure
     return {
         financialContext: financialContext,
         marketContext: marketContext,
@@ -140,7 +140,7 @@ function prepareValidationEvidence(evidence, financialReport, marketReport) {
     };
 }
 
-// Utility function to cleanly extract JSON from markdown or raw text
+// Extract and parse the first valid JSON substring from the model response text
 function extractAndParseJSON(responseStr) {
     let text = responseStr.trim();
     

@@ -1,8 +1,7 @@
 import React from 'react';
 
 /**
- * SourceBadge - Professional attribution badge for evidence sources.
- * Displays where specific financial data, metrics, or AI conclusions originated.
+ * SourceBadge component to display styled labels identifying the source or origin of specific data/metrics.
  */
 const SourceBadge = ({ source, type = 'default', className = '' }) => {
   if (!source) return null;

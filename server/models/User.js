@@ -95,7 +95,7 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      select: false // Ensure password is never returned in default queries
+      select: false // Prevent the password field from being included in database query projection results by default
     },
     preferences: {
       type: PreferencesSchema,
@@ -111,7 +111,7 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving if modified
+// Intercept save operations to hash the user's password using bcrypt if it has been updated
 UserSchema.pre('save', async function () {
   if (!this.isModified('password')) {
     return;
@@ -120,7 +120,7 @@ UserSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Compare entered password with stored hash
+// Verify if a plain-text password matches the stored bcrypt hash
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

@@ -1,8 +1,7 @@
 import React from 'react';
 
 /**
- * ScoreBar - Institutional progress bar for scores (0-100).
- * Handles missing/unavailable scores cleanly without fabricating numbers.
+ * ScoreBar component to render progress bars for scores (0-100), displaying N/A if score is missing.
  */
 const ScoreBar = ({
   label,

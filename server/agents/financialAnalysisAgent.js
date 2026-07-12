@@ -4,7 +4,7 @@ const { buildFinancialPrompt } = require('../prompts/financialPrompt');
 async function analyze(financialEvidence) {
     const startTime = Date.now();
 
-    // Prepare the evidence and build the prompt for Gemini
+    // Structure the financial evidence and construct the prompt
     const preparedEvidence = prepareFinancialEvidence(financialEvidence);
     const prompt = buildFinancialPrompt(preparedEvidence);
 
@@ -14,7 +14,7 @@ async function analyze(financialEvidence) {
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         const geminiStartTime = Date.now();
-        // Call the Gemini service to analyze financial evidence
+        // Generate financial analysis by invoking the Gemini API wrapper
         const geminiResponse = await geminiService.generate(prompt);
         const geminiResponseTime = Date.now() - geminiStartTime;
         lastRawResponse = geminiResponse.response;
@@ -26,7 +26,7 @@ async function analyze(financialEvidence) {
         }
 
         try {
-            // Extract and parse JSON from the Gemini response
+            // Parse the returned response string to extract valid JSON data
             const parsedData = extractAndParseJSON(geminiResponse.response);
             parsedData.metrics = {
                 "Financial Agent": {
@@ -60,7 +60,7 @@ function prepareFinancialEvidence(evidence) {
     
     const prepared = {};
     
-    // Helper to safely slice large arrays (historical records, lists)
+    // Limit array elements to the first four entries to control token length
     const extractRecent = (data, count = 4) => {
         if (Array.isArray(data)) {
             return data.slice(0, count);
@@ -74,11 +74,11 @@ function prepareFinancialEvidence(evidence) {
             for (const key of Object.keys(evidence[provider])) {
                 const val = evidence[provider][key];
                 
-                // If it's an array of historical data (e.g. financials, earnings, technicals)
+                // Limit history logs or other arrays to the first 4 recent records
                 if (Array.isArray(val)) {
                     prepared[provider][key] = extractRecent(val, 4);
                 } 
-                // If it's an object that might contain large arrays inside
+                // Handle objects recursively checking for nested arrays
                 else if (typeof val === 'object' && val !== null) {
                     prepared[provider][key] = {};
                     for (const subkey of Object.keys(val)) {
@@ -89,7 +89,6 @@ function prepareFinancialEvidence(evidence) {
                         }
                     }
                 } 
-                // Simple values or other objects
                 else {
                     prepared[provider][key] = val;
                 }
@@ -100,7 +99,7 @@ function prepareFinancialEvidence(evidence) {
     return prepared;
 }
 
-// Utility function to cleanly extract JSON from markdown or raw text
+// Extract and parse the first valid JSON substring from the model response text
 function extractAndParseJSON(responseStr) {
     let text = responseStr.trim();
     

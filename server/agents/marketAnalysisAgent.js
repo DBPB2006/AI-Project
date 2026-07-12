@@ -4,7 +4,7 @@ const { buildMarketPrompt } = require('../prompts/marketPrompt');
 async function analyze(marketEvidence) {
     const startTime = Date.now();
     
-    // Prepare the evidence and build the prompt for Gemini
+    // Normalize market data and construct the LLM prompt
     const preparedEvidence = prepareMarketEvidence(marketEvidence);
     const prompt = buildMarketPrompt(preparedEvidence);
 
@@ -14,7 +14,7 @@ async function analyze(marketEvidence) {
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         const geminiStartTime = Date.now();
-        // Call the Gemini AI service
+        // Invoke the Gemini API wrapper to evaluate market context
         const geminiResponse = await geminiService.generate(prompt);
         const geminiResponseTime = Date.now() - geminiStartTime;
         lastRawResponse = geminiResponse.response;
@@ -26,7 +26,7 @@ async function analyze(marketEvidence) {
         }
 
         try {
-            // Attempt to extract JSON from Gemini's text response
+            // Parse the returned response string to extract valid JSON data
             const parsedData = extractAndParseJSON(geminiResponse.response);
             parsedData.metrics = {
                 "Market Agent": {
@@ -58,7 +58,7 @@ async function analyze(marketEvidence) {
 function prepareMarketEvidence(evidence) {
     if (!evidence) return {};
     
-    // 1. Collect articles
+    // Retrieve all news articles from standard and Finnhub sources
     let allArticles = [];
     if (evidence.news && Array.isArray(evidence.news.newsApi)) {
         allArticles = allArticles.concat(evidence.news.newsApi.map(a => ({ ...a, _provider: 'NewsAPI' })));
@@ -68,7 +68,7 @@ function prepareMarketEvidence(evidence) {
     }
     const originalArticleCount = allArticles.length;
 
-    // 2. Normalize
+    // Map raw articles to standardized title, description, and source elements
     const normalizedArticles = allArticles.map(article => ({
         title: article.title || "",
         description: article.description || "",
@@ -79,14 +79,14 @@ function prepareMarketEvidence(evidence) {
         url: article.url || ""
     }));
 
-    // 3. Sort Newest to Oldest before deduplication
+    // Sort normalized articles descending by publication timestamp
     normalizedArticles.sort((a, b) => {
         const dateA = new Date(a.publishedAt || 0).getTime();
         const dateB = new Date(b.publishedAt || 0).getTime();
-        return dateB - dateA; // Newest first
+        return dateB - dateA;
     });
 
-    // 4. Deduplicate (priority: URL, Title + Source, Normalized Title)
+    // Deduplicate news entries by checking URL, combined Title/Source, or simplified title strings
     let seenUrls = new Set();
     let seenTitleSource = new Set();
     let seenTitles = new Set();
@@ -110,7 +110,7 @@ function prepareMarketEvidence(evidence) {
 
     const uniqueArticleCount = uniqueArticles.length;
 
-    // 5. Limit to 15 most recent unique articles
+    // Limit target news dataset size to the top 15 entries
     const limitedArticles = uniqueArticles.slice(0, 15);
     const articlesSentToLLM = limitedArticles.length;
 
@@ -129,7 +129,7 @@ function prepareMarketEvidence(evidence) {
     };
 }
 
-// Utility function to cleanly extract JSON from markdown or raw text
+// Extract and parse the first valid JSON substring from the model response text
 function extractAndParseJSON(responseStr) {
     let text = responseStr.trim();
     

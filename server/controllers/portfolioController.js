@@ -1,9 +1,7 @@
 const User = require('../models/User');
 const { calculatePortfolioMetrics } = require('../services/portfolioService');
 
-// @desc   Get complete runtime calculated portfolio
-// @route  GET /api/portfolio
-// @access Private
+// Calculate and retrieve complete portfolio metrics for the authenticated user
 exports.getPortfolio = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -26,9 +24,7 @@ exports.getPortfolio = async (req, res) => {
   }
 };
 
-// @desc   Add a holding to embedded portfolio
-// @route  POST /api/portfolio/add
-// @access Private
+// Add a new stock holding to the authenticated user's portfolio and save to database
 exports.addHolding = async (req, res) => {
   try {
     const { symbol, company, quantity, averageBuyPrice, sector, exchange, purchaseDate } = req.body;
@@ -50,7 +46,7 @@ exports.addHolding = async (req, res) => {
     const user = await User.findById(req.user._id);
     const upperSymbol = symbol.toUpperCase().trim();
 
-    // Prevent duplicate symbol
+    // Check if a holding with the same ticker symbol already exists in the user's portfolio
     const existingIdx = user.portfolio.holdings.findIndex(
       (h) => h.symbol === upperSymbol
     );
@@ -90,9 +86,7 @@ exports.addHolding = async (req, res) => {
   }
 };
 
-// @desc   Update an existing holding
-// @route  PUT /api/portfolio/update/:symbol
-// @access Private
+// Update holding properties (quantity, buy price, sector, company) for a specific symbol in the user's portfolio
 exports.updateHolding = async (req, res) => {
   try {
     const symbolParam = req.params.symbol.toUpperCase().trim();
@@ -143,9 +137,7 @@ exports.updateHolding = async (req, res) => {
   }
 };
 
-// @desc   Remove a holding
-// @route  DELETE /api/portfolio/remove/:symbol
-// @access Private
+// Remove a specific stock holding from the authenticated user's portfolio
 exports.removeHolding = async (req, res) => {
   try {
     const symbolParam = req.params.symbol.toUpperCase().trim();
@@ -181,9 +173,7 @@ exports.removeHolding = async (req, res) => {
   }
 };
 
-// @desc   Update cash and monthly investment
-// @route  PUT /api/portfolio/cash
-// @access Private
+// Update the user's available cash and monthly target investment amount
 exports.updateCash = async (req, res) => {
   try {
     const { cashAvailable, monthlyInvestment } = req.body;
@@ -218,9 +208,7 @@ exports.updateCash = async (req, res) => {
   }
 };
 
-// @desc   Toggle AI Personalization consent
-// @route  PUT /api/portfolio/consent
-// @access Private
+// Update the AI personalization consent status for the user's portfolio
 exports.updateConsent = async (req, res) => {
   try {
     const { consent } = req.body;
@@ -243,9 +231,7 @@ exports.updateConsent = async (req, res) => {
   }
 };
 
-// @desc   Reset portfolio holdings and cash
-// @route  DELETE /api/portfolio/reset
-// @access Private
+// Clear all holdings and reset cash, monthly investment, and consent values to defaults
 exports.resetPortfolio = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);

@@ -80,7 +80,7 @@ const Report = () => {
     );
   }
 
-  // Pure data extraction from Final Architecture Object
+  // Extract core sub-datasets from presentation data object
   const {
     company,
     evidence,
@@ -91,7 +91,7 @@ const Report = () => {
   const { canonical, charts, news } = evidence || {};
   const { investment, suitability } = reports || {};
 
-  // Extract from AI Reports explicitly
+  // Extract granular metrics from the AI investment report
   const decisionFactors = investment?.decisionFactors || [];
   const keyStrengths = investment?.keyStrengths || [];
   const watchItems = investment?.watchItems || [];

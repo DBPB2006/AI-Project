@@ -39,7 +39,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 /**
- * AssetsLiabilitiesChart - Displays grouped bars Assets vs Liabilities for each financial period.
+ * AssetsLiabilitiesChart component to display a grouped bar chart comparing Assets vs Liabilities for each financial period.
  */
 const AssetsLiabilitiesChart = ({ periods = [], source = 'FMP Balance Sheet', className = '' }) => {
   const chartData = React.useMemo(() => {

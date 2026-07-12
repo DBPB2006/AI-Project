@@ -1,9 +1,6 @@
 /**
- * PURE PRESENTATION LAYER UTILITY
- * 
- * Transforms LangGraph AI pipeline outputs into a canonical, frontend-ready object.
- * Exposes canonical data and provider discrepancies separately.
- * Never performs business logic, financial analysis, AI reasoning, or chart guessing.
+ * Utility to transform raw LangGraph AI pipeline outputs into a frontend-ready presentation format.
+ * Combines provider outputs and lists discrepancies.
  */
 
 const buildPresentationData = (finalState) => {
@@ -18,7 +15,7 @@ const buildPresentationData = (finalState) => {
     suitabilityReport = null,
   } = finalState;
 
-  // Helpers to safely get provider data
+  // Helper functions to safely retrieve FMP and Finnhub nested datasets
   const getFmp = (path) => evidence?.[path]?.fmp || {};
   const getFinn = (path) => evidence?.[path]?.finnhub || {};
 
@@ -54,13 +51,13 @@ const buildPresentationData = (finalState) => {
   const fmpChangePct = (fmpChange !== null && fmpPrevClose) ? (fmpChange / fmpPrevClose) * 100 : null;
   const finnChangePct = (finnChange !== null && finnPrevClose) ? (finnChange / finnPrevClose) * 100 : null;
 
-  // Company Canonical Resolution
+  // Resolve discrepancies and select canonical metrics for general company information
   const exchangeRes = resolveValue(fmpCompany.exchange, finnCompany.exchange);
   const sectorRes = resolveValue(fmpCompany.sector, finnCompany.sector);
   const industryRes = resolveValue(fmpCompany.industry, finnCompany.industry);
   const descriptionRes = resolveValue(fmpCompany.description, finnCompany.description);
 
-  // Market cap handling: FMP returns full value, Finnhub returns in millions
+  // Adjust Finnhub market cap to absolute dollar scale for comparison
   const fmpCap = fmpCompany.marketCap;
   const finnCap = finnCompany.marketCap ? finnCompany.marketCap * 1000000 : null;
   const mktCapRes = resolveValue(fmpCap, finnCap);
@@ -94,18 +91,18 @@ const buildPresentationData = (finalState) => {
     changesPercentage: changesPctRes.discrepancy
   };
 
-  // Financials Canonical Resolution
+  // Resolve standard revenue and net income values
   const revRes = resolveValue(fmpFin.revenue, finnFin.revenue);
   const netRes = resolveValue(fmpFin.netIncome, finnFin.netIncome);
 
-  // Gross Profit can be estimated from Revenue * Gross Margin if not explicitly in financials
+  // Calculate gross profit using margin if missing from base financials
   const fmpGross = fmpFin.grossProfit || (fmpFin.revenue && fmpRatios.grossMargin ? fmpFin.revenue * fmpRatios.grossMargin : null);
   const finnGross = finnFin.grossProfit || (finnFin.revenue && finnRatios.grossMargin ? finnFin.revenue * finnRatios.grossMargin : null);
   const grossRes = resolveValue(fmpGross, finnGross);
 
   const fcfRes = resolveValue(fmpFin.cashFlow, finnFin.cashFlow);
 
-  // EPS can be calculated from Price / PE if missing
+  // Estimate earnings per share using price and PE ratio if omitted
   const fmpEps = fmpFin.eps || (fmpPrice && fmpRatios.pe ? fmpPrice / fmpRatios.pe : null);
   const finnEps = finnFin.eps || (finnPrice && finnRatios.pe ? finnPrice / finnRatios.pe : null);
   const epsRes = resolveValue(fmpEps, finnEps);
@@ -113,7 +110,7 @@ const buildPresentationData = (finalState) => {
   const roeRes = resolveValue(fmpRatios.roe, finnRatios.roe);
   const peRes = resolveValue(fmpRatios.pe, finnRatios.pe);
 
-  // Debt to Equity
+  // Compute debt-to-equity ratio using debt and equity figures
   const fmpDebtToEquity = fmpFin.debtToEquity || (fmpFin.debt !== null && fmpFin.equity ? fmpFin.debt / fmpFin.equity : null);
   const finnDebtToEquity = finnFin.debtToEquity || (finnFin.debt !== null && finnFin.equity ? finnFin.debt / finnFin.equity : null);
   const debtRes = resolveValue(fmpDebtToEquity, finnDebtToEquity);
@@ -148,13 +145,13 @@ const buildPresentationData = (finalState) => {
   if (Object.keys(providerComparisons.company).length === 0) delete providerComparisons.company;
   if (Object.keys(providerComparisons.financials).length === 0) delete providerComparisons.financials;
 
-  // Chart Datasets (Canonical Arrays)
+  // Extract and map historical price entries for charts
   const rawFmpPrices = evidence?.historicalPrices?.fmp;
   const rawFinnPrices = evidence?.historicalPrices?.finnhub;
   const canonicalPrices = (Array.isArray(rawFmpPrices) && rawFmpPrices.length > 0) ? rawFmpPrices :
     (Array.isArray(rawFinnPrices) && rawFinnPrices.length > 0) ? rawFinnPrices : null;
 
-  // The frontend needs arrays for historical charts
+  // Build standard arrays for financial statements and charts
   const rawFmpFin = evidence?.financials?.fmp;
   const rawFinnFin = evidence?.financials?.finnhub;
   
@@ -174,7 +171,7 @@ const buildPresentationData = (finalState) => {
     historicalFinancials: historicalFin
   };
 
-  // News Normalization (Preserve all valid news items from providers)
+  // Map merged articles list into cleaned news items
   const mergedNews = Array.isArray(evidence?.news?.merged) ? evidence.news.merged : [];
 
   const cleanNews = mergedNews.map(item => ({
@@ -185,7 +182,7 @@ const buildPresentationData = (finalState) => {
     publishedAt: item.publishedAt || item.datetime || null
   }));
 
-  // Preserve Providers
+  // Preserves the raw provider data packages for detailed display options
   const providers = {
     fmp: {
       company: evidence?.company?.fmp,
@@ -213,7 +210,7 @@ const buildPresentationData = (finalState) => {
     finnhubNews: evidence?.news?.finnhub
   };
 
-  // Build Final Target Architecture
+  // Assemble the completed canonical presentation structure
   return {
     company: {
       symbol: symbol || 'TICKER',

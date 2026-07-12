@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const companyController = require('../controllers/companyController');
 
-// GET /api/companies?q=AAPL
-// Returns an array of matched companies for autocomplete
+// Route requests to GET /api/companies to search companies by query parameters
+// Retrieve a list of matching company documents for frontend autocomplete widgets
 router.get('/', companyController.searchCompanies);
 
 module.exports = router;

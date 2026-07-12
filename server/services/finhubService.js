@@ -47,16 +47,16 @@ async function getCurrentPrice(symbol) {
 
 async function getHistoricalPrices(symbol) {
     try {
-        // Fetch last 30 days roughly (or we can just fetch a set time range)
+        // Calculate Unix timestamps for the past 30 days time window
         const to = Math.floor(Date.now() / 1000);
-        const from = to - (30 * 24 * 60 * 60); // 30 days ago
+        const from = to - (30 * 24 * 60 * 60);
         
         const { data } = await axios.get(`${BASE_URL}/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=${API_KEY}`);
         
         if (data && data.s === "ok") {
-            // Map Finnhub arrays into FMP-style historical objects
+            // Map candles array data into historical price entries
             return data.t.map((timestamp, index) => {
-                // FMP format expects date string like 'YYYY-MM-DD'
+                // Extract the date portion from the parsed ISO string
                 const dateObj = new Date(timestamp * 1000);
                 const dateString = dateObj.toISOString().split('T')[0];
                 return {
@@ -67,7 +67,7 @@ async function getHistoricalPrices(symbol) {
                     close: data.c[index],
                     volume: data.v[index]
                 };
-            }).reverse(); // Most recent first to match FMP
+            }).reverse(); // Reverse the order of entries to put the most recent prices first
         }
         return [];
     } catch (error) {
@@ -168,36 +168,35 @@ async function fetch(symbol) {
             getHistoricalPrices(symbol)
         ]);
 
-        // Normalize Company
+        // Map API company profile metrics into standard schema format
         const normCompany = {
             symbol: company?.ticker || null,
             name: company?.name || null,
             exchange: company?.exchange || null,
-            industry: company?.finnhubIndustry || null, // Finnhub returns finnhubIndustry on profile2
-            sector: null, // Basic finnhub profile doesn't strictly have sector
+            industry: company?.finnhubIndustry || null, // Map finnhubIndustry attribute to industry
+            sector: null, // Note: basic profile contains no sector information
             country: company?.country || null,
             currency: company?.currency || null,
-            website: company?.weburl || null, // weburl
-            description: null, // Basic profile doesn't have description
+            website: company?.weburl || null,
+            description: null, // Note: basic profile contains no description details
             marketCap: company?.marketCapitalization || null
         };
 
-        // Normalize Stock
+        // Map quote and metrics to standard stock details format
         const normStock = {
             currentPrice: quote?.currentPrice || null,
             open: quote?.open || null,
             high: quote?.high || null,
             low: quote?.low || null,
             previousClose: quote?.previousClose || null,
-            volume: null, // quote endpoint doesn't return volume directly here, wait actually candle might
+            volume: null, // Volume data is omitted here as quote endpoint does not provide it
             averageVolume: null,
             high52Week: financials?.high52Week || null,
             low52Week: financials?.low52Week || null,
-            historicalPrices: historicalPrices || [] // Handled by evidence later
+            historicalPrices: historicalPrices || [] // Populate historical prices array
         };
 
-        // Normalize Financials
-        // Finnhub free doesn't easily expose full statements here in basic metrics
+        // Initialize empty standard financials since free tier does not support it
         const normFinancials = {
             revenue: null,
             netIncome: null,
@@ -209,7 +208,7 @@ async function fetch(symbol) {
             equity: null
         };
 
-        // Normalize Ratios
+        // Map metrics to standard valuation ratios structure
         const normRatios = {
             pe: financials?.peRatio || null,
             pb: financials?.pbRatio || null,
@@ -226,7 +225,7 @@ async function fetch(symbol) {
             stock: normStock,
             financials: normFinancials,
             ratios: normRatios,
-            historicalFinancials: [], // Finnhub basic doesn't provide this
+            historicalFinancials: [], // Basic tier does not provide historical statement sheets
             earnings: earnings || [],
             recommendations: recommendations || [],
             insiderSentiment: insiderSentiment || [],

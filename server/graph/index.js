@@ -15,8 +15,10 @@ async function runInvestmentGraph(company, symbol, portfolio, userConsent) {
         error: null
     };
 
-        const startTime = Date.now();
+    // Track start time of the investment pipeline run
+    const startTime = Date.now();
     const finalState = await investmentApp.invoke(initialState);
+    // Calculate overall execution duration of the investment graph run
     const executionTime = Date.now() - startTime;
         
     

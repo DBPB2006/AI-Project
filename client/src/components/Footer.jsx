@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <footer className="bg-[#1a1a1a] text-white py-24 px-8 md:px-16 lg:px-24 w-full relative overflow-hidden">
-      {/* Signature floating gray boxes theme in dark #1a1a1a background */}
+      {/* Decorative background shape elements to support the signature styling */}
       <div className="absolute w-10 h-10 bg-[#2a2a2a] top-[15%] left-[8%] pointer-events-none"></div>
       <div className="absolute w-8 h-8 bg-[#2a2a2a] top-[45%] left-[22%] pointer-events-none"></div>
       <div className="absolute w-12 h-12 bg-[#262626] bottom-[25%] left-[12%] pointer-events-none"></div>

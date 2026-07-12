@@ -32,19 +32,19 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 /**
- * RevenueChart - Displays Revenue for the last four reported periods.
+ * RevenueChart component to display a bar chart representing revenue trends over the last 4 reported financial statement periods.
  */
 const RevenueChart = ({ periods = [], source = 'FMP Income Statements', className = '' }) => {
   const chartData = React.useMemo(() => {
     if (!periods || !Array.isArray(periods) || periods.length === 0) return [];
-    // Take up to last 4 periods and format
+    // Format and select the last 4 reported periods
     const valid = periods
       .filter((p) => p && p.revenue !== undefined && p.revenue !== null)
       .map((p, i) => ({
         period: p.period || p.fiscalYear || p.calendarYear || p.date || (periods.length === 1 ? 'Reported' : `Period ${i + 1}`),
         revenue: Number(p.revenue)
       }));
-    // Sort oldest to newest
+    // Reverse the order to show periods from oldest to newest
     return valid.slice(0, 4).reverse();
   }, [periods]);
 

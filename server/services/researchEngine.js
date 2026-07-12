@@ -5,13 +5,8 @@ const finnhubNewsService = require('./finnhubNewsService');
 const Company = require('../models/Company');
 
 /**
- * The Research Engine orchestrates all API services and compiles their responses
- * into a single, standardized Evidence Package.
- * 
- * It acts purely as a data-gathering layer.
- * 
- * @param {string} symbol - The stock ticker symbol (e.g., "AAPL")
- * @returns {object} evidence - The compiled Evidence Package
+ * Gather research data on a stock ticker from various external database and API sources.
+ * Compiles financial reports, stock performance, ratios, news feeds, and historical data.
  */
 async function research(symbol) {
     
@@ -22,7 +17,7 @@ async function research(symbol) {
     const ticker = symbol.toUpperCase();
     
 
-    // 1. Fetch Company Information from MongoDB
+    // Find the company metadata inside MongoDB using the uppercase ticker
     
     
     
@@ -46,7 +41,7 @@ async function research(symbol) {
     
     const companyName = companyData.name;
 
-    // 2. Initialize the Evidence Package
+    // Structure the target data schema for compiling multiple API responses
     const evidence = {
         company: { fmp: {}, finnhub: {} },
         stock: { fmp: {}, finnhub: {} },
@@ -74,13 +69,13 @@ async function research(symbol) {
         }
     };
 
-    // 3. Execute all services concurrently
+    // Execute calls to all third-party data providers asynchronously
     
     
     
     
     
-    // FMP, Finnhub use the ticker. NewsAPI and GNews use the company name.
+    // Run fetches for FMP, Finnhub, NewsAPI, and Finnhub News in parallel
     const results = await Promise.allSettled([
         fmpService.fetch(ticker).catch(e => {  throw e; }),
         finnhubService.fetch(ticker).catch(e => {  throw e; }),
@@ -88,9 +83,7 @@ async function research(symbol) {
         finnhubNewsService.fetch({ symbol: ticker }).catch(e => {  throw e; })
     ]);
 
-    // --- DATA MAPPING --- //
-
-    // 1. FMP Data
+    // Map Financial Modeling Prep API data fields to standard structure
     if (results[0].status === 'fulfilled' && results[0].value) {
         const fmp = results[0].value;
         evidence.company.fmp = fmp.company || {};
@@ -108,7 +101,7 @@ async function research(symbol) {
         evidence.metadata.errors.fmp = results[0].reason ? results[0].reason.toString() : 'Failed to fetch FMP data';
     }
 
-    // 2. Finnhub Data
+    // Map Finnhub profile, metrics, quote, and sentiment data to standard structure
     if (results[1].status === 'fulfilled' && results[1].value) {
         const finnhub = results[1].value;
         evidence.company.finnhub = finnhub.company || {};
@@ -128,7 +121,7 @@ async function research(symbol) {
 
     let allNews = [];
 
-    // 3. NewsAPI Data
+    // Map NewsAPI article results to news array
     if (results[2].status === 'fulfilled' && results[2].value) {
         evidence.news.newsApi = results[2].value.news || [];
         allNews = allNews.concat(evidence.news.newsApi);
@@ -139,7 +132,7 @@ async function research(symbol) {
         evidence.metadata.errors.newsApi = results[2].reason ? results[2].reason.toString() : 'Failed to fetch NewsAPI data';
     }
 
-    // 4. Finnhub News Data
+    // Map Finnhub company-specific news articles to news array
     if (results[3].status === 'fulfilled' && results[3].value) {
         evidence.news.finnhub = results[3].value.news || [];
         allNews = allNews.concat(evidence.news.finnhub);
@@ -150,11 +143,10 @@ async function research(symbol) {
         evidence.metadata.errors.finnhubNews = results[3].reason ? results[3].reason.toString() : 'Failed to fetch Finnhub News data';
     }
 
-    // --- Deduplication & Relevance Scoring --- //
-    // Helper to normalize string for comparison
+    // Remove punctuation and extra whitespace from title strings for canonical mapping
     const normalize = (str) => (str || '').toLowerCase().replace(/[^\w\s]|_/g, '').replace(/\s+/g, ' ').trim();
 
-    // 1. Calculate Score for all articles
+    // Compute relevance scores using keyword matching weights
     const scoredNews = allNews.map(article => {
         let score = 0;
         const title = (article.title || '').toLowerCase();
@@ -163,7 +155,7 @@ async function research(symbol) {
         const compName = companyName.toLowerCase();
         const compTicker = ticker.toLowerCase();
 
-        // Positive Weights
+        // Increment relevance score for target company matching keywords
         if (title.includes(compName)) score += 30;
         if (title.includes(compTicker)) score += 25;
         if (desc.includes(compName)) score += 15;
@@ -181,8 +173,7 @@ async function research(symbol) {
         if (fullText.includes('manufacturing')) score += 10;
         if (fullText.includes('ai strategy')) score += 10;
 
-        // Negative Weights
-        // Massive Negative Weights for strict filtering
+        // Deduct score heavily for entertainment, sports, or political topics to filter noise
         if (fullText.includes('movie')) score -= 100;
         if (fullText.includes('tv')) score -= 100;
         if (fullText.includes('entertainment')) score -= 100;
@@ -193,16 +184,16 @@ async function research(symbol) {
         if (fullText.includes('gaming')) score -= 100;
         if (fullText.includes('lifestyle')) score -= 100;
         
-        // General tech without investment impact heuristic (rough approximation)
+        // Apply negative weights for general technology releases without investment relevance
         if (fullText.includes('software update') || fullText.includes('beta release')) score -= 20;
 
         return { ...article, score, normalizedTitle: normalize(article.title), fullText };
     });
 
-    // 1.5 Strict Filtering
+    // Filter out news articles with negative overall matching scores
     const filteredNews = scoredNews.filter(article => article.score >= 0);
 
-    // 2. Advanced Deduplication
+    // Deduplicate articles having identical normalized titles, choosing the highest score/newest date
     const uniqueNewsMap = new Map();
     for (const article of filteredNews) {
         if (!article.url || !article.title) continue;
@@ -231,7 +222,7 @@ async function research(symbol) {
 
     const uniqueNews = Array.from(uniqueNewsMap.values());
 
-    // Sort by relevance score (descending), then Published Date (newest first)
+    // Sort unique articles descending by match score, falling back to publication timestamp
     uniqueNews.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         const dateA = new Date(a.publishedAt).getTime() || 0;
@@ -239,12 +230,11 @@ async function research(symbol) {
         return dateB - dateA;
     });
 
-    // 3. Diversity Selection
+    // Group the final articles ensuring diverse thematic coverage
     const selectedNews = [];
     const usedThemes = new Set();
     const fallbackNews = [];
 
-    // Simple heuristic themes mapping
     const themeKeywords = {
         earnings: ['earnings', 'quarterly', 'results'],
         guidance: ['guidance', 'outlook', 'forecast'],
@@ -272,29 +262,22 @@ async function research(symbol) {
         }
     }
 
-    // Fill remaining slots if we didn't hit 10 diverse articles
+    // Supplement selected news list with fallback articles up to a limit of 10
     while (selectedNews.length < 10 && fallbackNews.length > 0) {
         selectedNews.push(fallbackNews.shift());
     }
 
-    // Sort final selection by score
+    // Sort the selected articles in descending order of relevance score
     selectedNews.sort((a, b) => b.score - a.score);
 
-    // Keep top 10 unique, most relevant articles as a separate merged view
+    // Reference the selected articles under the merged news attribute
     evidence.news.merged = selectedNews;
 
-    // LOG THE COMPLETED EVIDENCE PACKAGE
-    
-    
     return evidence;
 }
 
 /**
- * Helper to extract only the financial context from the Evidence Package.
- * Used by the Financial Analysis Agent.
- * 
- * @param {object} evidence - The complete Evidence Package
- * @returns {object} Financial subset of the evidence
+ * Extract only the financial datasets from the evidence payload.
  */
 function getFinancialEvidence(evidence) {
     return {
@@ -311,12 +294,7 @@ function getFinancialEvidence(evidence) {
 }
 
 /**
- * Helper to extract the market/news context from the Evidence Package.
- * Accepts the optional Financial Report to give the Market Analysis Agent full context.
- * 
- * @param {object} evidence - The complete Evidence Package
- * @param {object} [financialReport] - Optional report from the Financial Analysis Agent
- * @returns {object} Market subset of the evidence combined with the financial report
+ * Extract the news feeds and metadata from the evidence payload, attaching optional financial report context.
  */
 function getMarketEvidence(evidence, financialReport = null) {
     return {

@@ -9,9 +9,7 @@ const generateToken = (id) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: '30d' });
 };
 
-// @desc   Register new user
-// @route  POST /api/auth/register
-// @access Public
+// Create a new user account if the provided name, email, and password are valid and email is unique
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -30,7 +28,7 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Check duplicate email
+    // Check if the provided email is already registered in the database
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({
@@ -72,9 +70,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// @desc   Authenticate user & get token
-// @route  POST /api/auth/login
-// @access Public
+// Authenticate user credentials and return a session token upon successful validation
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,7 +82,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Explicitly select password for comparison
+    // Retrieve the user document matching the email, selecting the password field since it is hidden by default
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
@@ -123,9 +119,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// @desc   Get current logged in user profile
-// @route  GET /api/auth/me
-// @access Private
+// Retrieve the authenticated user's profile details from the database
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -158,9 +152,7 @@ exports.getMe = async (req, res) => {
   }
 };
 
-// @desc   Update user profile and preferences
-// @route  PUT /api/auth/profile
-// @access Private
+// Update the user's name, email, or investment preferences in the database
 exports.updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -217,9 +209,7 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-// @desc   Change user password
-// @route  PUT /api/auth/password
-// @access Private
+// Verify the current password and update it to the new password
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -263,9 +253,7 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-// @desc   Logout user
-// @route  POST /api/auth/logout
-// @access Private
+// Invalidate the user session by returning a successful logout response
 exports.logout = async (req, res) => {
   return res.status(200).json({
     success: true,

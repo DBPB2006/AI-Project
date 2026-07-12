@@ -4,16 +4,14 @@ const Analysis = require('../models/Analysis');
 const { buildPresentationData } = require('../utils/presentationBuilder');
 
 /**
- * Controller for the /api/analyze endpoint.
- * Acts as a bridge between the frontend and the AI Investment Pipeline (LangGraph).
- *
- * Expects a POST request with a JSON body containing a 'symbol' property.
+ * Route handler for the stock analysis request.
+ * Orchestrates fetching the company data and calling the AI pipeline.
  */
 exports.analyzeStock = async (req, res) => {
   try {
     const { symbol, portfolio, userConsent } = req.body;
 
-    // 1. Validate the Request
+    // Verify the stock symbol is present in the request body
     if (!symbol || typeof symbol !== 'string') {
       return res.status(400).json({
         success: false,
@@ -21,7 +19,7 @@ exports.analyzeStock = async (req, res) => {
       });
     }
 
-    // 2. Lookup Company Name
+    // Find the company matching the requested ticker symbol in the database
     const ticker = symbol.toUpperCase().trim();
     const companyData = await Company.findOne({ symbol: ticker });
     if (!companyData) {
@@ -31,13 +29,13 @@ exports.analyzeStock = async (req, res) => {
       });
     }
 
-    // 3. Determine portfolio object based on authenticated user consent or request
+    // Retrieve and format user portfolio and preference details based on user authentication status
     let resolvedPortfolio = null;
     if (req.user && req.user.portfolio && req.user.portfolio.consent) {
       const userPortfolio = req.user.portfolio.toObject ? req.user.portfolio.toObject() : req.user.portfolio;
       const userPreferences = req.user.preferences ? (req.user.preferences.toObject ? req.user.preferences.toObject() : req.user.preferences) : {};
       
-      // Combine portfolio holdings/cash with user risk preferences for the Suitability Agent
+      // Merge portfolio holdings/cash data with user risk preferences
       resolvedPortfolio = {
         ...userPortfolio,
         ...userPreferences
@@ -45,9 +43,9 @@ exports.analyzeStock = async (req, res) => {
     } else if (portfolio) {
       resolvedPortfolio = portfolio.toObject ? portfolio.toObject() : portfolio;
     }
-    // Unauthenticated users without a provided portfolio will just skip suitability mapping.
+    // Proceed without portfolio context if the request lacks auth or manual portfolio data
 
-    // 4. Run the AI Investment Pipeline (LangGraph)
+    // Execute the LangGraph workflow to process investment, market, and validation agents
     const finalState = await runInvestmentGraph(
       companyData.name,
       ticker,
@@ -55,7 +53,7 @@ exports.analyzeStock = async (req, res) => {
       userConsent || Boolean(resolvedPortfolio)
     );
 
-    // 5. Save report to Analysis History if user is authenticated
+    // Store the resulting analysis report in the database history for authenticated users
     if (req.user) {
       try {
         await Analysis.create({
@@ -67,14 +65,14 @@ exports.analyzeStock = async (req, res) => {
           reportData: finalState
         });
       } catch (historyErr) {
-        
+        // Silently catch history logging errors to avoid failing the analysis response
       }
     }
 
-    // 6. Build the canonical Presentation Object
+    // Formulate standard display structures from the pipeline results
     finalState.presentationData = buildPresentationData(finalState);
 
-    // 7. Return the Final State to Frontend
+    // Respond with the completed analysis state object
     return res.status(200).json({
       success: true,
       data: finalState
@@ -82,7 +80,7 @@ exports.analyzeStock = async (req, res) => {
   } catch (error) {
     
 
-    // Handle MongoDB "not found" error elegantly
+    // Send a 404 response if the database lookup reveals the ticker is missing
     if (error.message.includes('not found in database')) {
       return res.status(404).json({
         success: false,
@@ -90,7 +88,7 @@ exports.analyzeStock = async (req, res) => {
       });
     }
 
-    // Generic server error
+    // Catch and return any unhandled execution errors with a 500 status code
     return res.status(500).json({
       success: false,
       message: 'An error occurred while executing the AI pipeline.',

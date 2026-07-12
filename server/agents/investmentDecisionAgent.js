@@ -4,15 +4,15 @@ const { buildInvestmentDecisionPrompt } = require('../prompts/investmentDecision
 async function analyze(evidence, financialReport, marketReport, validationReport) {
     const startTime = Date.now();
     
-    // Guard clauses: abort if any previous agent failed
+    // Check if any of the preceding analyses returned an error status, and return it directly
     if (financialReport.error) return financialReport;
     if (marketReport.error) return marketReport;
     if (validationReport.error) return validationReport;
 
-    // Combine all previous reports into a single evidence payload
+    // Consolidate reports and evidence into a structured payload for the final decision model
     const preparedEvidence = prepareInvestmentDecisionEvidence(evidence, financialReport, marketReport, validationReport);
     
-    // Build the final decision prompt
+    // Construct the prompt using the consolidated payload
     const prompt = buildInvestmentDecisionPrompt(preparedEvidence);
 
     const MAX_RETRIES = 3;
@@ -21,7 +21,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         const geminiStartTime = Date.now();
-        // Request the final decision from Gemini
+        // Invoke the Gemini API wrapper to generate the decision output
         const geminiResponse = await geminiService.generate(prompt);
         const geminiResponseTime = Date.now() - geminiStartTime;
         lastRawResponse = geminiResponse.response;
@@ -35,7 +35,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
         try {
             const parsedData = extractAndParseJSON(geminiResponse.response);
             
-            // Schema Validation
+            // Verify the parsed response contains all mandatory properties
             const requiredFields = ['recommendation', 'confidence', 'investmentThesis', 'overallSummary'];
             for (const field of requiredFields) {
                 if (!parsedData[field]) {
@@ -43,7 +43,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
                 }
             }
 
-            // Recommendation Validation
+            // Enforce allowable recommendation statuses mapping non-standard categories
             const allowedRecs = ["BUY", "HOLD", "PASS"];
             let rec = parsedData.recommendation?.toUpperCase();
             if (rec === "SELL") rec = "PASS";
@@ -54,7 +54,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
             }
             parsedData.recommendation = rec;
 
-            // Confidence Validation
+            // Enforce standard confidence ratings mapping equivalent values
             const allowedConf = ["High", "Medium", "Low"];
             let conf = parsedData.confidence?.charAt(0).toUpperCase() + parsedData.confidence?.slice(1).toLowerCase();
             if (conf === "Moderate") conf = "Medium";
@@ -98,7 +98,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
 
     const sliceArray = (arr, limit) => Array.isArray(arr) ? arr.slice(0, limit) : arr;
 
-    // 1. Build a new trimmed evidence object directly to avoid deep copying the massive payload
+    // Construct a filtered evidence package payload to control prompt size
     const trimmedEvidence = {
         company: evidence.company || {},
         stock: evidence.stock || {},
@@ -111,7 +111,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
         news: {}
     };
 
-    // Safely copy and trim each category while preserving provider separation
+    // Slice each dataset group to standard count limit
     const categoriesToTrim = [
         { name: 'financials', limit: 1 },
         { name: 'ratios', limit: 1 },
@@ -149,7 +149,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
         if (evidence.news.finnhub) trimmedEvidence.news.finnhub = sliceArray(evidence.news.finnhub, 5);
     }
 
-    // 2. Financial Context
+    // Extract core summaries and outputs from the financial report
     const financialContext = {
         overallSummary: financialReport.overallSummary || "",
         companyOverview: financialReport.companyOverview || {},
@@ -166,7 +166,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
         missingEvidence: financialReport.missingEvidence || []
     };
 
-    // 3. Market Context
+    // Extract sentiment and catalysts from the market report
     const marketContext = {
         newsSummary: marketReport.newsSummary || "",
         majorTopics: (marketReport.majorTopics || []).map(t => ({
@@ -182,7 +182,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
         missingEvidence: marketReport.missingEvidence || []
     };
 
-    // 4. Validation Context
+    // Extract discrepancies, contradictions, and guidance from the validation report
     const validationContext = {
         financialValidation: validationReport.financialValidation || {},
         marketValidation: validationReport.marketValidation || {},
@@ -214,7 +214,7 @@ function prepareInvestmentDecisionEvidence(evidence, financialReport, marketRepo
     };
 }
 
-// Utility function to cleanly extract JSON from markdown or raw text
+// Extract and parse the first valid JSON substring from the model response text
 function extractAndParseJSON(responseStr) {
     let text = responseStr.trim();
     

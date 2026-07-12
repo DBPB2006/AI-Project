@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Pages
+// Import view pages representing application route endpoints
 import Home from './pages/Home';
 import About from './pages/About';
 import Explore from './pages/Explore';
@@ -26,7 +26,7 @@ function App() {
           <Navbar />
           <main className="flex-1 flex flex-col">
             <Routes>
-              {/* Public & Guest Routes */}
+              {/* Render public pages accessible to any user without authentication */}
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/explore" element={<Explore />} />
@@ -35,7 +35,7 @@ function App() {
               <Route path="/processing" element={<Processing />} />
               <Route path="/report" element={<Report />} />
 
-              {/* Protected Institutional Routes */}
+              {/* Enforce authorization and authentication wrapper on private user pages */}
               <Route
                 path="/portfolio"
                 element={
@@ -69,7 +69,7 @@ function App() {
                 }
               />
 
-              {/* 404 Not Found */}
+              {/* Fallback route to catch undefined URLs and render page not found */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

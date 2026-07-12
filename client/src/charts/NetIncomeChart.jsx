@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 /**
- * NetIncomeChart - Displays Quarterly/Annual Net Income trend.
+ * NetIncomeChart component to display a bar chart representing Net Income trends over multiple financial statement periods.
  */
 const NetIncomeChart = ({ periods = [], source = 'FMP Income Statements', className = '' }) => {
   const chartData = React.useMemo(() => {

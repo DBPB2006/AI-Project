@@ -6,7 +6,7 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Define and apply CORS policy and JSON body parsing middlewares
 const corsOptions = {
     origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -17,7 +17,7 @@ app.use(express.json());
 
 const mongoose = require('mongoose');
 
-// Routes
+// Import and mount individual API route modules for analysis, company info, authentication, portfolio, and history
 const analyzeRoutes = require("./routes/analyzeRoutes");
 const companyRoutes = require("./routes/companyRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -31,20 +31,20 @@ app.use("/api/auth", authRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/history", historyRoutes);
 
-// Health Check
+// Set up a root health check endpoint to verify server status
 app.get("/", (req, res) => {
     res.json({
         status: "Server Running"
     });
 });
 
-// Database Connection
+// Configure and establish MongoDB connection using Mongoose
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/research_engine_db';
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Server
+// Initialize and start the Express server on the specified port
 const PORT = process.env.PORT || 3300;
 
 app.listen(PORT, () => {

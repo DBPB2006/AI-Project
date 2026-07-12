@@ -32,7 +32,7 @@ const Navbar = () => {
 
   return (
     <header className="absolute top-0 left-0 right-0 flex flex-wrap justify-between items-center w-full z-50 py-6 px-8 md:px-16 lg:px-24 border-b border-black/10">
-      {/* Editorial Brand Logo */}
+      {/* Render the app logo branding and link it to the landing page */}
       <div className="flex items-center gap-3">
         <Link to="/" className="text-xl tracking-tight font-serif font-bold text-black hover:opacity-80 transition-opacity">
           EVIDENCE AI
@@ -40,7 +40,7 @@ const Navbar = () => {
 
       </div>
 
-      {/* Navigation Links */}
+      {/* Render guest or authenticated nav items based on user authentication status */}
       <nav className="flex flex-wrap items-center gap-1.5 text-xs font-semibold tracking-wider">
         {activeLinks.map((link) => {
           const isActive = location.pathname === link.path;

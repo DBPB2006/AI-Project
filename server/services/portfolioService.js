@@ -4,8 +4,7 @@ const FMP_API_KEY = process.env.FMP_API_KEY;
 const BASE_URL = 'https://financialmodelingprep.com/stable';
 
 /**
- * Fetches the latest stock quote for a symbol.
- * Falls back gracefully if external quote API is unavailable.
+ * Retrieve the current price quote for a given stock symbol from the FMP API.
  */
 async function fetchLatestPrice(symbol) {
   try {
@@ -23,11 +22,7 @@ async function fetchLatestPrice(symbol) {
 }
 
 /**
- * Calculates complete runtime portfolio metrics dynamically.
- * Controllers must delegate all portfolio math to this service.
- *
- * @param {object} portfolioDoc - The user.portfolio subdocument
- * @returns {object} Full calculated portfolio summary and enriched holdings
+ * Calculate dynamic portfolio metrics, including allocation ratios, earnings performance, and diversification status.
  */
 async function calculatePortfolioMetrics(portfolioDoc) {
   const holdings = portfolioDoc?.holdings || [];
@@ -35,7 +30,7 @@ async function calculatePortfolioMetrics(portfolioDoc) {
   const monthlyInvestment = Number(portfolioDoc?.monthlyInvestment || 0);
   const consent = Boolean(portfolioDoc?.consent);
 
-  // Fetch prices concurrently for all symbols
+  // Query latest prices concurrently for each unique symbol in the holdings list
   const uniqueSymbols = [...new Set(holdings.map((h) => h.symbol))];
   const priceMap = {};
 
@@ -50,7 +45,7 @@ async function calculatePortfolioMetrics(portfolioDoc) {
   let portfolioValue = 0;
   const sectorMap = {};
 
-  // Enrich holdings with calculated fields
+  // Compute profit/loss, values, and sector exposure for each individual holding
   const enrichedHoldings = holdings.map((h) => {
     const qty = Number(h.quantity || 0);
     const avgPrice = Number(h.averageBuyPrice || 0);
@@ -88,19 +83,19 @@ async function calculatePortfolioMetrics(portfolioDoc) {
     };
   });
 
-  // Calculate allocation % for each holding now that portfolioValue is known
+  // Compute the relative weight of each holding as a percentage of total portfolio value
   enrichedHoldings.forEach((h) => {
     h.allocationPercentage =
       portfolioValue > 0 ? Math.round((h.currentValue / portfolioValue) * 10000) / 100 : 0;
   });
 
-  // Summary calculations
+  // Calculate aggregate portfolio metrics including net worth and overall gain or loss percentage
   const totalProfitLoss = portfolioValue - totalInvestment;
   const totalProfitLossPercentage =
     totalInvestment > 0 ? (totalProfitLoss / totalInvestment) * 100 : 0;
   const netWorth = portfolioValue + cashAvailable;
 
-  // Sector Allocation Breakdown
+  // Construct a list of sector weights and values sorting by weight
   const sectorAllocation = Object.entries(sectorMap).map(([sector, value]) => ({
     sector,
     value: Math.round(value * 100) / 100,
@@ -110,7 +105,7 @@ async function calculatePortfolioMetrics(portfolioDoc) {
 
   sectorAllocation.sort((a, b) => b.value - a.value);
 
-  // Diversification Assessment
+  // Evaluate diversification status based on holding diversity and sector concentration thresholds
   const holdingCount = enrichedHoldings.length;
   const sectorCount = sectorAllocation.length;
   const topSectorWeight = sectorAllocation[0]?.percentage || 0;

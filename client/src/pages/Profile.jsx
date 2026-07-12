@@ -8,18 +8,18 @@ const API_URL = `${API_BASE_URL}/api/auth`;
 const Profile = () => {
   const { user, updateUser } = useAuth();
 
-  // Profile fields
+  // Local state fields for profile name and email
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
 
-  // Preference fields
+  // Local state fields for risk tolerance and sector preferences
   const [riskTolerance, setRiskTolerance] = useState(user?.preferences?.riskTolerance || 'Moderate');
   const [investmentGoal, setInvestmentGoal] = useState(user?.preferences?.investmentGoal || 'Long-term Wealth Growth');
   const [investmentHorizon, setInvestmentHorizon] = useState(user?.preferences?.investmentHorizon || '5+ Years');
   const [preferredSectors, setPreferredSectors] = useState((user?.preferences?.preferredSectors || []).join(', '));
   const [avoidedSectors, setAvoidedSectors] = useState((user?.preferences?.avoidedSectors || []).join(', '));
 
-  // Password change fields
+  // Local state fields for password update verification
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 

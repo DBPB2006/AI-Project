@@ -13,7 +13,7 @@ async function fetch(companyData) {
     try {
         const { symbol } = companyData;
         
-        // Finnhub requires from and to dates. We'll fetch the last 14 days of news.
+        // Define the from/to date range spanning the last 14 days for the news API query
         const toDate = new Date();
         const fromDate = new Date();
         fromDate.setDate(toDate.getDate() - 14);
@@ -44,7 +44,7 @@ async function fetch(companyData) {
                 provider: "finnhub"
             }));
 
-            // Limit to top 15 like we used to roughly get
+            // Restrict the results to the top 15 news articles for performance
             resultData = { news: news.slice(0, 15) };
         }
     } catch (error) {

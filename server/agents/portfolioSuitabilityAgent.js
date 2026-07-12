@@ -4,11 +4,11 @@ const { buildPortfolioSuitabilityPrompt } = require('../prompts/portfolioSuitabi
 async function analyze(evidence, financialReport, marketReport, validationReport, investmentReport, portfolio) {
     const startTime = Date.now();
     
-    // Guard clauses: If previous agents encountered errors, skip suitability analysis
+    // Skip suitability analysis if preceding agents encountered execution failures
     if (investmentReport?.error) return investmentReport;
     if (validationReport?.error) return validationReport;
 
-    // Short-circuit logic
+    // Return standard skip status if no portfolio data is provided
     if (!portfolio) {
         return {
             portfolioAnalysisSkipped: true,
@@ -31,10 +31,10 @@ async function analyze(evidence, financialReport, marketReport, validationReport
         };
     }
 
-    // Prepare a lightweight payload
+    // Format suitability context from previous agent outputs and metadata
     const decisionEvidence = preparePortfolioSuitabilityContext(evidence, validationReport, investmentReport);
     
-    // Measure Context Size
+    // Measure raw context size vs prepared payload size to check token reduction
     const originalContextSize = JSON.stringify({ evidence, validationReport, investmentReport }).length;
     const preparedContextSize = JSON.stringify(decisionEvidence).length;
     const reductionPercent = ((originalContextSize - preparedContextSize) / originalContextSize * 100).toFixed(2);
@@ -47,7 +47,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         const geminiStartTime = Date.now();
-        // Call the Gemini service to analyze suitability
+        // Invoke the Gemini API wrapper to evaluate portfolio suitability
         const geminiResponse = await geminiService.generate(prompt);
         const geminiResponseTime = Date.now() - geminiStartTime;
         lastRawResponse = geminiResponse.response;
@@ -61,7 +61,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
         try {
             const parsedData = extractAndParseJSON(geminiResponse.response);
             
-            // Normalize Arrays and Booleans
+            // Enforce proper boolean and array formats on response properties
             if (typeof parsedData.portfolioAnalysisSkipped !== 'boolean') {
                 parsedData.portfolioAnalysisSkipped = parsedData.portfolioAnalysisSkipped === "true" || parsedData.portfolioAnalysisSkipped === true;
             }
@@ -69,7 +69,7 @@ async function analyze(evidence, financialReport, marketReport, validationReport
             parsedData.strengths = Array.isArray(parsedData.strengths) ? parsedData.strengths : [];
             parsedData.limitations = Array.isArray(parsedData.limitations) ? parsedData.limitations : [];
 
-            // Schema Validation
+            // Verify the parsed object contains all necessary output fields
             const requiredFields = [
                 'portfolioAnalysisSkipped', 'portfolioFit', 'riskAlignment', 'diversificationImpact', 
                 'sectorExposure', 'cashAssessment', 'investmentHorizonFit', 'allocationSuggestion',
@@ -148,7 +148,7 @@ function preparePortfolioSuitabilityContext(evidence, validationReport, investme
     };
 }
 
-// Utility function to cleanly extract JSON from markdown or raw text
+// Extract and parse the first valid JSON substring from the model response text
 function extractAndParseJSON(responseStr) {
     let text = responseStr.trim();
     

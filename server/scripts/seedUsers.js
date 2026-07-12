@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const User = require('../models/User');
 
-// Load environment variables
+// Load environmental configurations from the server .env file
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/research_engine_db';
@@ -137,15 +137,15 @@ async function seedDB() {
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to MongoDB.');
 
-    // Remove existing seed users
+    // Remove any existing user documents matching the mock user email addresses
     const emailsToClear = mockUsers.map(u => u.email);
     console.log('Clearing existing mock users...');
     await User.deleteMany({ email: { $in: emailsToClear } });
 
-    // Seed new users
+    // Iterate and insert the mock user records into the database
     console.log('Seeding mock users...');
     for (const userData of mockUsers) {
-      // Create user using document instantiating so pre-save hook runs for hashing password
+      // Instantiate and save User documents to ensure Mongoose save validation and password hashing middleware execute
       const user = new User(userData);
       await user.save();
       console.log(`Seeded user: ${user.name} (${user.email})`);

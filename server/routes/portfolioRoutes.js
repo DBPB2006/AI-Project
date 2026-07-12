@@ -11,7 +11,7 @@ const {
 } = require('../controllers/portfolioController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.use(protect); // Ensure all portfolio routes are protected
+router.use(protect); // Enforce authentication check on all subsequent portfolio route handlers
 
 router.get('/', getPortfolio);
 router.post('/add', addHolding);

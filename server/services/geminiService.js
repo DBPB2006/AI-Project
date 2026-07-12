@@ -1,6 +1,6 @@
 const { GoogleGenAI } = require("@google/genai");
 
-// Validate API key on startup
+// Check that the Gemini API key is configured in environmental variables
 if (!process.env.GEMINI_API_KEY) {
     
 }
@@ -11,13 +11,13 @@ const ai = new GoogleGenAI({
 
 async function generate(prompt) {
     try {
-        // Use the correct method for the new @google/genai SDK
+        // Call the Google GenAI SDK to generate content using the Flash Lite model
         const response = await ai.models.generateContent({
             model: "gemini-flash-lite-latest",
             contents: prompt
         });
 
-        // Return a simple standardized object
+        // Formulate a success response payload with the generated text
         return {
             success: true,
             response: response.text
@@ -25,7 +25,7 @@ async function generate(prompt) {
 
     } catch (error) {
         
-        // Return structured failure instead of throwing an error to prevent the whole app from crashing
+        // Return a structured failure object if the API call throws an error
         return {
             success: false,
             response: "AI Generation Failed."

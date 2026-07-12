@@ -35,7 +35,7 @@ const companySchema = new mongoose.Schema(
     country: {
       type: String,
       trim: true,
-      default: 'US', // Assuming predominantly US market initially, can be overridden
+      default: 'US', // Default country setting to US for localization
     },
     currency: {
       type: String,
@@ -61,7 +61,7 @@ const companySchema = new mongoose.Schema(
       ],
     },
     logo: {
-      type: String, // URL to the logo image
+      type: String, // URL pointing to the company's logo graphic
       trim: true,
     },
     isActive: {
@@ -70,17 +70,16 @@ const companySchema = new mongoose.Schema(
       index: true,
     },
     cik: {
-      type: String, // SEC Central Index Key, useful for EDGAR mapping
+      type: String, // SEC Central Index Key identifier for EDGAR filings integration
       trim: true,
     },
   },
   {
-    timestamps: true, // Automatically manages createdAt and updatedAt
+    timestamps: true, // Enable automatic tracking of document creation and modification times
   }
 );
 
-// Compound index for search optimizations
-// Allows efficiently finding companies by name and symbol together if a combined search is used
+// Create a compound index on name and symbol fields to optimize autocomplete and search queries
 companySchema.index({ name: 1, symbol: 1 });
 
 const Company = mongoose.model('Company', companySchema);
