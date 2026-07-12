@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Newsreader', 'Georgia', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-v-cyan: #D1F4FF;
+  --color-v-dark: #222222;
+  --color-v-gray: #EFEFEF;
+  --color-v-gray-dark: #3A3A3A;
+
+  --color-brand-bg-primary: #fdfdfd;
+  --color-brand-bg-secondary: #ebecf0;
+  --color-brand-text-dark: #1a1b1e;
+  --color-brand-slate: #4c6066;
+  --color-brand-cyan: #bdf0ff;
+  --color-brand-light-slate: #dcecf0;
+  --color-brand-gray: #a3a0a0;
+  --color-brand-dark-gray: #666666;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Newsreader', Georgia, serif;
+  letter-spacing: -0.015em;
+}
+
+.bg-texture {
+  background-color: #a5f3fc;
+  background-image: repeating-linear-gradient(90deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.25) 10px,
+      rgba(255, 255, 255, 0.25) 20px);
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-square {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background-color: #1a1a1a;
+}
+
+.bg-pinstripe {
+  background-image: linear-gradient(to right, #BFEFFF 1px, transparent 1px);
+  background-size: 20px 100%;
+}
+
+.bg-pinstripe-dense {
+  background-image: linear-gradient(to right, #BFEFFF 1px, transparent 1px);
+  background-size: 10px 100%;
+}
+
+/* Editorial design system helpers */
+.bg-editorial-grid {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-editorial-dots {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.editorial-card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px 0px #1a1a1a;
+}
