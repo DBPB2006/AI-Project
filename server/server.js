@@ -34,8 +34,7 @@ app.use("/api/history", historyRoutes);
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://YOUR-FRONTEND-DOMAIN.vercel.app",
-        "https://YOUR-FRONTEND.onrender.com"
+        "https://ai-project-eight-psi.vercel.app/"
     ],
     credentials: true
 }));

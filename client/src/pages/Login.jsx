@@ -43,7 +43,7 @@ const Login = () => {
             Research Workspace Access
           </span>
           <h1 className="text-5xl md:text-7xl font-medium tracking-tight text-v-dark">
-            Sign in to AI Investment Research Agent
+            Sign in to Evidence AI
           </h1>
         </div>
 
